@@ -1,4 +1,4 @@
-""" Program: PDF Automata by Amrit
+""" Program: PDF Automata by Amrital Aujla
     This program takes a Driver Settlement issued to drivers for Falcon Motor Freight Ltd. and turns it into a
     pay report that the drivers use to pay others.
     
@@ -22,7 +22,9 @@ def main():
     all_text = get_full_text(pdf)
 
     if all_text == '':
-        print("I got nothin'")
+        doc = docx.Document()
+        doc.add_paragraph('Nothing Found in PDF')
+        doc.save('doc_storage/Error.docx')
     else:
         text = get_relevant_text(all_text)
         name_and_date = get_name_date_data(text)
@@ -30,7 +32,6 @@ def main():
         trip_list = make_trip_list(text)
         pickups_and_miles = get_trip_blocks(text, pickups_block=True)
         pay_calculations = calculate_pay(pickups_and_miles, rate)
-        print(pickups_and_miles)
         make_document(name_and_date, trip_list, rate, pickups_and_miles, pay_calculations)
 
 
@@ -77,11 +78,9 @@ def get_rate():
 def make_trip_list(text):
     """ Makes a list of each individual trips, detailing from where to where they went """
     trip_blocks = get_trip_blocks(text)
-    print(trip_blocks)
     trip_list = []
     for trip in trip_blocks:
         trip_list.append(get_trip_summary(trip))
-    print(trip_list)
     return trip_list
 
 
